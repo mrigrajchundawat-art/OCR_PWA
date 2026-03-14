@@ -17,7 +17,7 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.endsWith('/__shared-image__') && event.request.method === 'GET') {
     event.respondWith(
       caches.open(SHARE_CACHE).then((cache) =>
-        cache.match('/__shared-image__').then((response) => {
+        cache.match(url.href).then((response) => {
           if (response) return response;
           return new Response(null, { status: 404 });
         })
@@ -28,18 +28,21 @@ self.addEventListener('fetch', (event) => {
 
   // Handle share target POST
   if (url.pathname.endsWith('/share-target') && event.request.method === 'POST') {
+    const appBase = url.pathname.replace(/\/share-target$/, '/');
+    const redirectUrl = url.origin + appBase + '?shared=1';
+    const sharedImageKey = url.origin + appBase + '__shared-image__';
     event.respondWith(
       event.request.formData().then((formData) => {
         const file = formData.get('sharedimages');
         if (!file || !file.type.startsWith('image/')) {
-          return Response.redirect(url.origin + '/?error=no_image', 303);
+          return Response.redirect(url.origin + appBase + '?error=no_image', 303);
         }
         return caches.open(SHARE_CACHE).then((cache) => {
-          cache.delete('/__shared-image__');
+          cache.delete(sharedImageKey);
           const headers = new Headers({ 'Content-Type': file.type });
-          return cache.put('/__shared-image__', new Response(file, { headers }));
-        }).then(() => Response.redirect(url.origin + '/?shared=1', 303));
-      }).catch(() => Response.redirect(url.origin + '/?error=share_failed', 303))
+          return cache.put(sharedImageKey, new Response(file, { headers }));
+        }).then(() => Response.redirect(redirectUrl, 303));
+      }).catch(() => Response.redirect(url.origin + appBase + '?error=share_failed', 303))
     );
     return;
   }

@@ -39,7 +39,7 @@
     // Register service worker for Share Target before Flutter loads
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js', { scope: '/' });
+        navigator.serviceWorker.register('sw.js', { scope: './' });
       });
     }
   </script>

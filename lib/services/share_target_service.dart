@@ -8,7 +8,8 @@ bool get hasSharedImage {
 
 /// URL to fetch the shared image (served from service worker cache).
 String get sharedImageUrl {
-  return '${Uri.base.origin}/__shared-image__';
+  final base = Uri.base.toString();
+  return base.endsWith('/') ? '${base}__shared-image__' : '$base/__shared-image__';
 }
 
 /// Error message if share failed.

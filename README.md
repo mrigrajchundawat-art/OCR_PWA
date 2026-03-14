@@ -42,6 +42,23 @@ After installing the PWA:
 - **Desktop Chrome** – Pick image works; share target limited
 - **iOS Safari** – Share target support is limited; use **Pick image** instead
 
+## Deploy to GitHub Pages
+
+1. **Push your code** to a GitHub repository.
+
+2. **Enable GitHub Pages** (one-time setup):
+   - Go to **Settings → Pages**
+   - Under **Build and deployment**, set **Source** to **GitHub Actions**
+
+3. **Push to `main`** – the workflow runs automatically and deploys to:
+   ```
+   https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/
+   ```
+
+4. **Manual deploy** – Go to **Actions → Deploy to GitHub Pages → Run workflow**
+
+The workflow (`.github/workflows/deploy.yml`) builds with the correct `base-href` for your repo path, so Share Target and service worker work correctly.
+
 ## Tech stack
 
 - Flutter Web
